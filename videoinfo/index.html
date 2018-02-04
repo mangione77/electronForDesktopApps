@@ -6,9 +6,26 @@
         <h1>VideoInfo</h1>
         <form>
             <div>
-                <label>Select a video</label>
-                <input type="file" accept="video/*" />
+                <label>Select a video</label><br />
+                <input type="file" accept="video/*" /><br />
+                <button type="submit">Get info</button><br />
             </div>
         </form>
+        <h1 id="result"></h1>
+        <script>
+            const electron = require('electron')
+            const { ipcRenderer } = electron
+
+            document.querySelector('form').addEventListener('submit', () => {
+                event.preventDefault()
+
+                const { path } = document.querySelector('input').files[0]
+                ipcRenderer.send('video:submit', path)
+            })
+
+            ipcRenderer.on('video:metadata', (event,duration) => {
+                document.querySelector('#result').innerHTML = `Video is: ${duration.toFixed(2)}s`
+            })
+        </script>
     </body>
-</html>
+</html> 
